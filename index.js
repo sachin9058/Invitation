@@ -133,23 +133,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function initializeTextElement(el) {
         el.addEventListener('mousedown', (e) => {
+            if (el.classList.contains('is-editing')) return;
+
             e.preventDefault();
             setActiveTextElement(el);
             isDragging = true;
             offsetX = e.clientX - el.getBoundingClientRect().left;
             offsetY = e.clientY - el.getBoundingClientRect().top;
-            el.style.cursor = 'grabbing';
             e.stopPropagation();
+        });
+
+        el.addEventListener('dblclick', (e) => {
+            el.classList.add('is-editing');
+            el.focus();
         });
     }
 
     document.querySelectorAll('.draggable-text').forEach(initializeTextElement);
     
+    document.addEventListener('click', (e) => {
+        if (activeTextElement && !activeTextElement.contains(e.target)) {
+            activeTextElement.classList.remove('is-editing');
+        }
+    });
+
     function setActiveTextElement(element) {
+        if (activeTextElement && activeTextElement !== element) {
+            activeTextElement.classList.remove('is-editing');
+        }
         if (activeTextElement) activeTextElement.classList.remove('active');
+        
         activeTextElement = element;
-        activeTextElement.classList.add('active');
-        updateToolbar(activeTextElement);
+
+        if (activeTextElement) {
+            activeTextElement.classList.add('active');
+            updateToolbar(activeTextElement);
+        }
     }
 
     document.addEventListener('mousemove', (e) => {
@@ -161,12 +180,19 @@ document.addEventListener('DOMContentLoaded', () => {
             y = Math.max(0, Math.min(y, parentRect.height - activeTextElement.offsetHeight));
             activeTextElement.style.left = `${x}px`;
             activeTextElement.style.top = `${y}px`;
+            activeTextElement.style.transform = '';
         }
     });
 
     document.addEventListener('mouseup', () => {
         if (isDragging) {
-            if (activeTextElement) activeTextElement.style.cursor = 'move';
+            if (activeTextElement) {
+                activeTextElement.style.cursor = 'move';
+                const rotation = controls.rotation.value;
+                if (rotation !== '0') {
+                    applyTransform('rotate', rotation);
+                }
+            }
             isDragging = false;
         }
     });
@@ -176,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function applyTransform(property, value) {
-         if (activeTextElement) {
+       if (activeTextElement) {
             let currentRotation = controls.rotation.value;
             if (property === 'rotate') currentRotation = value;
             activeTextElement.style.transform = `rotate(${currentRotation}deg)`;
@@ -237,7 +263,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     document.getElementById('download-btn').addEventListener('click', () => {
-        if (activeTextElement) activeTextElement.classList.remove('active');
+        if (activeTextElement) {
+            activeTextElement.classList.remove('active');
+            activeTextElement.classList.remove('is-editing');
+        }
+        
         html2canvas(cardPreview, { useCORS: true }).then(canvas => {
             const link = document.createElement('a');
             link.download = 'invitation.png';
@@ -245,7 +275,8 @@ document.addEventListener('DOMContentLoaded', () => {
             link.click();
             if (activeTextElement) activeTextElement.classList.add('active');
         });
-    });-
+    });
+    
     createDots();
     goToSlide(0);
     setActiveTextElement(document.getElementById('text1'));
