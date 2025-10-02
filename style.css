@@ -1,0 +1,212 @@
+/* --- NEW: Import More Elegant Fonts --- */
+@import url('https://fonts.googleapis.com/css2?family=Allura&family=Bebas+Neue&family=Caveat&family=Cormorant+Garamond:wght@400;700&family=Dancing+Script&family=EB+Garamond&family=Great+Vibes&family=Lato:wght@400;700&family=Libre+Baskerville&family=Lobster+Two&family=Lora&family=Merriweather&family=Montserrat:wght@300;400&family=Open+Sans:wght@400;700&family=Oswald&family=PT+Serif&family=Pacifico&family=Parisienne&family=Pinyon+Script&family=Playfair+Display:wght@400;700&family=Poppins&family=Quicksand&family=Raleway&family=Rochester&family=Sacramento&family=Tangerine&display=swap');
+
+/* --- NEW: CSS Variables for Theming --- */
+:root {
+    --shadow-light: rgba(0, 0, 0, 0.1);
+    --shadow-dark: rgba(0, 0, 0, 0.2);
+}
+
+.website-header {
+    width: 100%;
+    text-align: center;
+    padding: 20px 0;
+    margin-bottom: -40px; /* Pulls the content below it up slightly */
+    position: relative;
+    z-index: 50;
+}
+
+.website-header h1 {
+    font-family: 'Great Vibes', cursive; /* Or 'Dancing Script', 'Pacifico' */
+    font-size: 3.5rem; /* 56px */
+    font-weight: 400;
+    color: var(--text-accent);
+    margin: 0;
+    line-height: 1;
+}
+
+body.theme-ivory {
+    --bg-main: #f3f0e9;
+    --bg-card: #fdfaf3;
+    --bg-toolbar: #ffffff;
+    --text-primary: #3d3d3d;
+    --text-accent: #b48c4f;
+    --border-color: #e0d9cb;
+    --button-bg: #4a4a4a;
+    --button-hover: #333;
+    --default-font-color: #3d3d3d;
+}
+
+body.theme-floral {
+    --bg-main: #f4eef6;
+    --bg-card: #ffffff;
+    --bg-toolbar: #ffffff;
+    --text-primary: #5c3f6b;
+    --text-accent: #b66a93;
+    --border-color: #e8ddee;
+    --button-bg: #5c3f6b;
+    --button-hover: #4a3255;
+    --default-font-color: #5c3f6b;
+}
+
+body.theme-navy {
+    --bg-main: #141a2c;
+    --bg-card: #1a233b;
+    --bg-toolbar: #212c4d;
+    --text-primary: #e0e5f0;
+    --text-accent: #e6b4a5;
+    --border-color: #313d64;
+    --button-bg: #e6b4a5;
+    --button-hover: #d1a192;
+    --default-font-color: #e6b4a5;
+}
+
+/* --- Base Styles --- */
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--bg-main);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    padding-top: 80px; /* Space for theme switcher */
+    gap: 30px;
+    transition: background-color 0.4s;
+    color: var(--text-primary);
+}
+
+/* --- NEW: Theme Switcher Styling --- */
+.theme-switcher {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 15px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(5px);
+    border-radius: 50px;
+    box-shadow: 0 2px 10px var(--shadow-light);
+    z-index: 100;
+}
+.theme-button {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+.theme-button:hover {
+    transform: scale(1.1);
+}
+
+/* --- Redesigned Editor --- */
+h3 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    color: var(--text-accent);
+}
+.editor-container { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+.card-preview {
+    width: 350px;
+    height: 550px;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px var(--shadow-dark);
+    overflow: hidden;
+    position: relative;
+    background-color: var(--bg-card);
+    transition: background-color 0.4s;
+}
+.card-preview::before { /* Floral texture for the floral theme */
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: var(--bg-card-texture, none);
+    background-color: transparent;
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: 1;
+}
+body.theme-floral .card-preview::before {
+    background-image: url(https://www.transparenttextures.com/patterns/watercolor.png);
+}
+
+.image-slider, .slide, .slide img { width: 100%; height: 100%; }
+.image-slider { display: flex; transition: transform 0.4s ease-in-out; }
+.slide { flex-shrink: 0; position: relative; }
+.slide img { object-fit: cover; pointer-events: none; }
+.draggable-text {
+    position: absolute;
+    cursor: move;
+    user-select: none;
+    padding: 10px;
+    min-width: 50px;
+    border: 2px dashed transparent;
+    border-radius: 5px;
+    color: var(--default-font-color);
+    text-shadow: none; /* Resetting default shadow */
+    transition: border-color 0.2s, color 0.4s;
+    text-align: center;
+    z-index: 5;
+}
+.draggable-text.active { border-color: var(--text-accent); outline: none; }
+#text1 { top: 40px; left: 50%; transform: translateX(-50%); font-size: 42px; font-family: 'Great Vibes', cursive; }
+#text2 { top: 250px; left: 50%; transform: translateX(-50%); font-size: 20px; font-family: 'Cormorant Garamond', serif; }
+#text3 { bottom: 50px; left: 50%; transform: translateX(-50%); font-size: 16px; font-family: 'Montserrat', sans-serif; }
+
+.slide-arrow {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.2);
+    color: white; padding: 8px 12px; border-radius: 50%;
+    cursor: pointer; user-select: none; font-size: 20px; line-height: 1;
+    z-index: 10; transition: background-color 0.2s;
+}
+.slide-arrow:hover { background-color: rgba(0, 0, 0, 0.5); }
+#prev-slide { left: 15px; }
+#next-slide { right: 15px; }
+
+.slide-dots { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.5); cursor: pointer; transition: background-color 0.3s; }
+.dot.active { background-color: white; }
+
+/* --- Redesigned Controls Toolbar --- */
+.controls-toolbar {
+    width: 350px; padding: 25px;
+    background: var(--bg-toolbar); border: 1px solid var(--border-color);
+    border-radius: 8px; box-shadow: 0 5px 20px var(--shadow-light);
+    display: flex; flex-direction: column; gap: 20px; transition: background-color 0.4s, border-color 0.4s;
+}
+.control-group label { font-size: 14px; font-weight: 400; color: var(--text-primary); margin-bottom: 5px; }
+.control-group input, .control-group select, .button-group button {
+    width: 100%; padding: 10px; border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    font-size: 14px; box-sizing: border-box; transition: background-color 0.4s, border-color 0.4s, color 0.4s;
+}
+.control-group input:focus, .control-group select:focus {
+    border-color: var(--text-accent);
+    outline: none;
+}
+.control-group-row { display: flex; align-items: flex-end; gap: 10px; }
+.control-group-row .control-group { flex-grow: 1; }
+.button-group { display: flex; gap: 5px; }
+.button-group button { cursor: pointer; background-color: transparent; }
+.button-group button.active { background-color: var(--text-accent); color: var(--bg-toolbar); border-color: var(--text-accent); }
+.utility-btn {
+    width: 100%; padding: 12px 15px; border: none;
+    background-color: var(--button-bg);
+    color: var(--bg-toolbar);
+    font-size: 15px; font-weight: 500; border-radius: 6px; cursor: pointer; transition: background-color 0.2s;
+}
+.utility-btn:hover { background-color: var(--button-hover); }
+hr { border: none; height: 1px; background-color: var(--border-color); margin: 0; }
+
+#download-btn{
+    margin-top: 4px;
+}
